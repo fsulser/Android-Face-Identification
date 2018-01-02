@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">FaceTracking</string>
+
+    <string name="azure_subscription_key">azureKey</string>
+    <string name="azure_endpoint">azureEndpoint</string>
+    <string name="active_group">activeGroup</string>
+    <string name="train">Train</string>
+    <string name="identify">Identify</string>
+    <string name="endpoint">Azure Endpoint:</string>
+    <string name="api_key">API Key:</string>
+    <string name="select_group">Select Group:</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="new_group">New Group</string>
+    <string name="select_person">Select Person:</string>
+    <string name="new_person">New Person</string>
+    <string name="capture_image">Capture Image</string>
+    <string name="upload">Upload</string>
+    <string name="preview_description">Preview of image to upload</string>
+
+</resources>
