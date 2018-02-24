@@ -87,7 +87,7 @@ public class CameraHelper extends Application {
 
         // You can use your own settings for your detector
         FaceDetector detector = new FaceDetector.Builder(context)
-                .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
+                .setClassificationType(FaceDetector.NO_CLASSIFICATIONS)
                 .build();
 
         // This is how you merge myFaceDetector and google.vision detector

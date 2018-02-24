@@ -26,46 +26,46 @@ class MyFaceDetector extends Detector<Face> {
         mDelegate = delegate;
     }
 
-    public SparseArray<Face> detect(Frame frame) {
-        int rotationAngle = 0;
-        int width = frame.getMetadata().getWidth();
-        int height = frame.getMetadata().getHeight();
+    public SparseArray<Face> detect(final Frame frame) {
+        new Thread() {
+            @Override
+            public void run() {
 
-        switch (frame.getMetadata().getRotation()) {
-            case 0:
-                break;
-            case 1:
-                rotationAngle = 90;
-                break;
-            case 2:
-                rotationAngle = 180;
-                break;
-            case 3:
-                rotationAngle = 270;
-                break;
-            default:
-                rotationAngle = 0;
-        }
+                int rotationAngle = 0;
+                int width = frame.getMetadata().getWidth();
+                int height = frame.getMetadata().getHeight();
+
+                switch (frame.getMetadata().getRotation()) {
+                    case 0:
+                        break;
+                    case 1:
+                        rotationAngle = 90;
+                        break;
+                    case 2:
+                        rotationAngle = 180;
+                        break;
+                    case 3:
+                        rotationAngle = 270;
+                        break;
+                    default:
+                        rotationAngle = 0;
+                }
 
 
-        YuvImage yuvImage = new YuvImage(frame.getGrayscaleImageData().array(), ImageFormat.NV21, width, height, null);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        yuvImage.compressToJpeg(new Rect(0, 0, width, height), 100, byteArrayOutputStream);
-        byte[] jpegArray = byteArrayOutputStream.toByteArray();
-        Bitmap bitmap = BitmapFactory.decodeByteArray(jpegArray, 0, jpegArray.length);
-        Matrix matrix = new Matrix();
-        matrix.postRotate(rotationAngle);
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
-        Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+                YuvImage yuvImage = new YuvImage(frame.getGrayscaleImageData().array(), ImageFormat.NV21, width, height, null);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                yuvImage.compressToJpeg(new Rect(0, 0, width, height), 100, byteArrayOutputStream);
+                byte[] jpegArray = byteArrayOutputStream.toByteArray();
+                Bitmap bitmap = BitmapFactory.decodeByteArray(jpegArray, 0, jpegArray.length);
+                Matrix matrix = new Matrix();
+                matrix.postRotate(rotationAngle);
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+                Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
 
-        GraphicHolder.faceImage = rotatedBitmap;
-
-        Frame croppedFrame =
-                new Frame.Builder()
-                        .setBitmap(bitmap)
-                        .setRotation(frame.getMetadata().getRotation())
-                        .build();
-        return mDelegate.detect(croppedFrame);
+                GraphicHolder.faceImage = rotatedBitmap;
+             }
+            }.start();
+        return mDelegate.detect(frame);
     }
 
     public boolean isOperational() {

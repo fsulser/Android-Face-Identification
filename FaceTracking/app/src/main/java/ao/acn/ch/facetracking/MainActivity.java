@@ -1,12 +1,15 @@
 package ao.acn.ch.facetracking;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +18,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.microsoft.projectoxford.face.FaceServiceClient;
@@ -40,6 +45,18 @@ public class MainActivity extends AppCompatActivity {
         context = getApplicationContext();
         activity = this;
         createFaceServiceClient();
+        AppBarLayout appBar = (AppBarLayout)this.findViewById(R.id.action_bar);
+
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            appBar.setVisibility(View.GONE);
+        }
+        else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            appBar.setVisibility(View.VISIBLE);
+        }
+
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
