@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,7 @@ public class Train_Fragment extends Fragment{
     private View rootView;
     private Spinner personGroups, persons;
     private Button capture, upload, train;
-    private static ImageView preview;
+    private ImageView preview;
     private Bitmap capturedImage;
     private ProgressDialog progressDialog;
     
@@ -144,13 +145,13 @@ public class Train_Fragment extends Fragment{
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
-            capturedImage = (Bitmap) data.getExtras().get("data");
-            preview.setImageBitmap(capturedImage);
+            try {
+                capturedImage = (Bitmap) data.getExtras().get("data");
+                preview.setImageBitmap(capturedImage);
+            }catch (NullPointerException e){
+                Log.e("", "no bitmap data");
+            }
         }
-    }
-
-    public static void setPreview(Bitmap bitmap){
-        preview.setImageBitmap(bitmap);
     }
 
     private void personGroupItemSelect(){

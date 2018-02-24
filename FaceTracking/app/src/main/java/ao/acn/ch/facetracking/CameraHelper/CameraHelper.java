@@ -1,6 +1,7 @@
 package ao.acn.ch.facetracking.CameraHelper;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
@@ -28,6 +29,7 @@ import ao.acn.ch.facetracking.camera.GraphicOverlay;
  * Created by fabiosulser on 29.12.17.
  */
 
+@SuppressLint("Registered")
 public class CameraHelper extends Application {
     private static final int RC_HANDLE_GMS = 9001;
     private static final int RC_HANDLE_CAMERA_PERM = 2;
@@ -102,38 +104,12 @@ public class CameraHelper extends Application {
 
         // You can use your own processor
         myFaceDetector.setProcessor(
-                new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory(mGraphicOverlay, mCameraSource))
+                new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory(mGraphicOverlay))
                         .build());
 
         if (!myFaceDetector.isOperational()) {
             Log.w("", "Face detector dependencies are not yet available.");
         }
-
-/*
-        Context context = parentActivity.getApplicationContext();
-
-        FaceDetector detector = new FaceDetector.Builder(context).setClassificationType(FaceDetector.ALL_CLASSIFICATIONS).build();
-
-        CameraSource mCameraSource = new CameraSource.Builder(context, detector)
-                .setRequestedPreviewSize(640, 480)
-                .setFacing(cameraFacing)
-                .setRequestedFps(30.0f)
-                .build();
-
-        detector.setProcessor(new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory(mGraphicOverlay, mCameraSource)).build());
-
-        if (!detector.isOperational()) {
-            // Note: The first time that an app using face API is installed on a device, GMS will
-            // download a native library to the device in order to do detection.  Usually this
-            // completes before the app is run for the first time.  But if that download has not yet
-            // completed, then the above call will not detect any faces.
-            //
-            // isOperational() can be used to check if the required native library is currently
-            // available.  The detector will automatically become operational once the library
-            // download completes on device.
-            Log.w("", "Face detector dependencies are not yet available.");
-        }
-*/
 
         return mCameraSource;
     }

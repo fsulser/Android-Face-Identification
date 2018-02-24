@@ -1,7 +1,6 @@
 package ao.acn.ch.facetracking;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         context = getApplicationContext();
         activity = this;
         createFaceServiceClient();
-        AppBarLayout appBar = (AppBarLayout)this.findViewById(R.id.action_bar);
+        AppBarLayout appBar = this.findViewById(R.id.action_bar);
 
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {

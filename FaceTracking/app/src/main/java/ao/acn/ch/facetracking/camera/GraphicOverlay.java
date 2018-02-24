@@ -18,6 +18,7 @@ package ao.acn.ch.facetracking.camera;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.vision.CameraSource;
@@ -179,7 +180,11 @@ public class GraphicOverlay extends View {
             }
 
             for (Graphic graphic : mGraphics) {
-                graphic.draw(canvas);
+                try {
+                    graphic.draw(canvas);
+                }catch (Exception e){
+                    Log.e("", "could not draw rect");
+                }
             }
         }
     }

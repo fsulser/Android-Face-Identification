@@ -22,7 +22,7 @@ public class UploadPersonFace extends AsyncTask<String, String, AddPersistedFace
     private final InputStream imageInputStream;
 
     public interface AsyncResponse {
-        void processFinish(AddPersistedFaceResult output);
+        void processFinish(@SuppressWarnings("unused") AddPersistedFaceResult output);
     }
     private UploadPersonFace.AsyncResponse delegate = null;
 

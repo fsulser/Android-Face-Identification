@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.microsoft.projectoxford.face.FaceServiceRestClient;
 import com.microsoft.projectoxford.face.contract.PersonGroup;
 
 import java.util.ArrayList;
@@ -101,10 +100,10 @@ class HelperDialog extends Dialog {
                         editor.putString(activity.getString(R.string.active_group), selectGroup.getSelectedItem().toString());
                     }
                 }
-                if(apiKey.getText() != null && !apiKey.getText().equals("")){
+                if(apiKey.getText() != null && !apiKey.getText().toString().equals("")){
                     editor.putString(activity.getString(R.string.azure_subscription_key), String.valueOf(apiKey.getText()));
                 }
-                if(endPoint.getText() != null && !endPoint.getText().equals("")){
+                if(endPoint.getText() != null && !endPoint.getText().toString().equals("")){
                     editor.putString(activity.getString(R.string.azure_endpoint), String.valueOf(endPoint.getText()));
                 }
                 MainActivity.createFaceServiceClient();
