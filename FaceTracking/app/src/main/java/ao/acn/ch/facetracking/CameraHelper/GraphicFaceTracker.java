@@ -4,15 +4,20 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
 import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.util.Log;
 
 import com.google.android.gms.vision.CameraSource;
+import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.microsoft.projectoxford.face.contract.Person;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
@@ -74,6 +79,7 @@ class GraphicFaceTracker extends Tracker<Face> {
      */
     @Override
     public void onNewItem(final int faceId, final Face face) {
+        final Frame frame = GraphicHolder.frame;
         Log.i("", "neues gesicht");
         if(!Objects.equals(personGroup, getPersonGroupFromPref())){
             setPersonGroup();
@@ -82,10 +88,41 @@ class GraphicFaceTracker extends Tracker<Face> {
         new Thread() {
             @Override
             public void run() {
-                Bitmap resizedBitmap = crop(GraphicHolder.faceImage, face);
-//                Train_Fragment.setPreview(resizedBitmap);
-                detectFace(resizedBitmap);
+                int rotationAngle = 0;
+                int width = frame.getMetadata().getWidth();
+                int height = frame.getMetadata().getHeight();
 
+                switch (frame.getMetadata().getRotation()) {
+                    case 0:
+                        break;
+                    case 1:
+                        rotationAngle = 90;
+                        break;
+                    case 2:
+                        rotationAngle = 180;
+                        break;
+                    case 3:
+                        rotationAngle = 270;
+                        break;
+                    default:
+                        rotationAngle = 0;
+                }
+
+
+                YuvImage yuvImage = new YuvImage(frame.getGrayscaleImageData().array(), ImageFormat.NV21, width, height, null);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                yuvImage.compressToJpeg(new Rect(0, 0, width, height), 100, byteArrayOutputStream);
+                byte[] jpegArray = byteArrayOutputStream.toByteArray();
+                Bitmap bitmap = BitmapFactory.decodeByteArray(jpegArray, 0, jpegArray.length);
+                Matrix matrix = new Matrix();
+                matrix.postRotate(rotationAngle);
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+                Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+
+                GraphicHolder.faceImage = rotatedBitmap;
+                Bitmap resizedBitmap = crop(rotatedBitmap, face);
+//                      Train_Fragment.setPreview(resizedBitmap);
+                detectFace(resizedBitmap);
             }
         }.start();
     }
