@@ -40,6 +40,8 @@ public class Identify_Fragment extends Fragment {
             cameraSource = cameraHelper.createCameraSource(CameraSource.CAMERA_FACING_FRONT);
         } else {
             cameraHelper.requestCameraPermission();
+            cameraSource = cameraHelper.createCameraSource(CameraSource.CAMERA_FACING_FRONT);
+            cameraHelper.startCameraSource(cameraSource, mPreview);
         }
 
         FloatingActionButton fab = rootView.findViewById(R.id.fab);

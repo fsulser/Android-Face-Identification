@@ -85,6 +85,33 @@ public class CameraHelper extends Application {
 
         Context context = parentActivity.getApplicationContext();
 
+        // You can use your own settings for your detector
+        FaceDetector detector = new FaceDetector.Builder(context)
+                .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
+                .build();
+
+        // This is how you merge myFaceDetector and google.vision detector
+        MyFaceDetector myFaceDetector = new MyFaceDetector(detector);
+
+        // You can use your own settings for CameraSource
+        CameraSource mCameraSource = new CameraSource.Builder(context, myFaceDetector)
+                .setRequestedPreviewSize(640, 480)
+                .setFacing(cameraFacing)
+                .setRequestedFps(30.0f)
+                .build();
+
+        // You can use your own processor
+        myFaceDetector.setProcessor(
+                new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory(mGraphicOverlay, mCameraSource))
+                        .build());
+
+        if (!myFaceDetector.isOperational()) {
+            Log.w("", "Face detector dependencies are not yet available.");
+        }
+
+/*
+        Context context = parentActivity.getApplicationContext();
+
         FaceDetector detector = new FaceDetector.Builder(context).setClassificationType(FaceDetector.ALL_CLASSIFICATIONS).build();
 
         CameraSource mCameraSource = new CameraSource.Builder(context, detector)
@@ -106,7 +133,7 @@ public class CameraHelper extends Application {
             // download completes on device.
             Log.w("", "Face detector dependencies are not yet available.");
         }
-
+*/
 
         return mCameraSource;
     }

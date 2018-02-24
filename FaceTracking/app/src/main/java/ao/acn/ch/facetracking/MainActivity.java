@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
     }
 
-    private void createFaceServiceClient(){
+    public static void createFaceServiceClient(){
         SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
         String azureKey = sharedPref.getString(activity.getString(R.string.azure_subscription_key), "");
         String endpoint = sharedPref.getString(activity.getString(R.string.azure_endpoint), "");

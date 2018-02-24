@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.microsoft.projectoxford.face.FaceServiceRestClient;
 import com.microsoft.projectoxford.face.contract.PersonGroup;
 
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ class HelperDialog extends Dialog {
 
     private void setEndpoint(){
         //"https://westcentralus.api.cognitive.microsoft.com/face/v1.0"
-        endPoint.setText(sharedPref.getString(activity.getString(R.string.azure_endpoint), ""));
+        endPoint.setText(sharedPref.getString(activity.getString(R.string.azure_endpoint), "https://westcentralus.api.cognitive.microsoft.com/face/v1.0"));
 
     }
 
@@ -95,12 +96,20 @@ class HelperDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString(activity.getString(R.string.active_group), selectGroup.getSelectedItem().toString());
-                editor.putString(activity.getString(R.string.azure_subscription_key), String.valueOf(apiKey.getText()));
-                editor.putString(activity.getString(R.string.azure_endpoint), String.valueOf(endPoint.getText()));
+                if(selectGroup.getSelectedItem() != null ){
+                    if(!selectGroup.getSelectedItem().toString().equals("")) {
+                        editor.putString(activity.getString(R.string.active_group), selectGroup.getSelectedItem().toString());
+                    }
+                }
+                if(apiKey.getText() != null && !apiKey.getText().equals("")){
+                    editor.putString(activity.getString(R.string.azure_subscription_key), String.valueOf(apiKey.getText()));
+                }
+                if(endPoint.getText() != null && !endPoint.getText().equals("")){
+                    editor.putString(activity.getString(R.string.azure_endpoint), String.valueOf(endPoint.getText()));
+                }
+                MainActivity.createFaceServiceClient();
 
                 editor.apply();
-
                 dismiss();
             }
         });

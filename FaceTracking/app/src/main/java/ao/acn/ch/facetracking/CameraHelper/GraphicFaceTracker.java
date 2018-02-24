@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.util.Log;
 
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Tracker;
@@ -20,6 +22,7 @@ import ao.acn.ch.facetracking.AzureHelper.DetectPersonFace;
 import ao.acn.ch.facetracking.AzureHelper.IdentifyPerson;
 import ao.acn.ch.facetracking.MainActivity;
 import ao.acn.ch.facetracking.R;
+import ao.acn.ch.facetracking.Train_Fragment;
 import ao.acn.ch.facetracking.camera.GraphicOverlay;
 
 /**
@@ -71,27 +74,20 @@ class GraphicFaceTracker extends Tracker<Face> {
      */
     @Override
     public void onNewItem(final int faceId, final Face face) {
+        Log.i("", "neues gesicht");
         if(!Objects.equals(personGroup, getPersonGroupFromPref())){
             setPersonGroup();
             getPersonIDsForGroup();
         }
-        if (mCameraSource != null){
-            mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
-                @Override
-                public void onPictureTaken(final byte[] bytes) {
-                    new Thread() {
-                        @Override
-                        public void run() {
+        new Thread() {
+            @Override
+            public void run() {
+                Bitmap resizedBitmap = crop(GraphicHolder.faceImage, face);
+//                Train_Fragment.setPreview(resizedBitmap);
+                detectFace(resizedBitmap);
 
-                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            Bitmap resizedBitmap = crop(bitmap, face);
-
-                            detectFace(resizedBitmap);
-                        }
-                    }.start();
-                }
-            });
-        }
+            }
+        }.start();
     }
 
     private void detectFace(Bitmap bitmap){

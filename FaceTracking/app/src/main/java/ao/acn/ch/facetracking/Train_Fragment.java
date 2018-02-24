@@ -49,7 +49,7 @@ public class Train_Fragment extends Fragment{
     private View rootView;
     private Spinner personGroups, persons;
     private Button capture, upload, train;
-    private ImageView preview;
+    private static ImageView preview;
     private Bitmap capturedImage;
     private ProgressDialog progressDialog;
     
@@ -147,6 +147,10 @@ public class Train_Fragment extends Fragment{
             capturedImage = (Bitmap) data.getExtras().get("data");
             preview.setImageBitmap(capturedImage);
         }
+    }
+
+    public static void setPreview(Bitmap bitmap){
+        preview.setImageBitmap(bitmap);
     }
 
     private void personGroupItemSelect(){
