@@ -9,17 +9,16 @@ import java.util.Objects;
 import ao.acn.ch.facetracking.MainActivity;
 
 /**
- * Created by fabio.sulser on 27.03.2018.
+ * Created by fabiosulser on 31.12.17.
  */
 
-
-public class TrainingStatus extends AsyncTask<String, String, String> {
+public class TrainPersonGroup extends AsyncTask<String, String, String>{
     public interface AsyncResponse {
         void processFinish(String output);
     }
     private TrainPersonGroup.AsyncResponse delegate = null;
 
-    public TrainingStatus(TrainPersonGroup.AsyncResponse delegate){
+    public TrainPersonGroup(TrainPersonGroup.AsyncResponse delegate){
         this.delegate = delegate;
     }
 
@@ -32,7 +31,8 @@ public class TrainingStatus extends AsyncTask<String, String, String> {
         // Get an instance of face service client.
         FaceServiceClient faceServiceClient = MainActivity.getFaceServiceClient();
         try{
-            faceServiceClient.getPersonGroupTrainingStatus(params[0]);
+            faceServiceClient.trainPersonGroup(params[0]);
+            MainActivity.showToast("Persongroup " + params[0] + " is training");
             return params[0];
         } catch (Exception e) {
             MainActivity.showToast(e.getMessage());
@@ -42,8 +42,6 @@ public class TrainingStatus extends AsyncTask<String, String, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        //TODO add training status
-        MainActivity.showToast("Trainingstatus is : ");
         delegate.processFinish(result);
     }
 }

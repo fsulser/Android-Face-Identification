@@ -1,6 +1,7 @@
 package ao.acn.ch.facetracking.AzureHelper;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.microsoft.projectoxford.face.FaceServiceClient;
 import com.microsoft.projectoxford.face.contract.IdentifyResult;
@@ -34,7 +35,12 @@ public class IdentifyPerson extends AsyncTask<String, String, UUID>{
         FaceServiceClient faceServiceClient = MainActivity.getFaceServiceClient();
         try{
             IdentifyResult[] faces = faceServiceClient.identity(personGroup, faceIDs, 1);
-            return faces[0].candidates.get(0).personId;
+            if(faces.length > 0){
+                if(faces[0].candidates.size() > 0) {
+                    return faces[0].candidates.get(0).personId;
+                }
+            }
+            return null;
         } catch (Exception e) {
             MainActivity.showToast(e.getMessage());
             return null;

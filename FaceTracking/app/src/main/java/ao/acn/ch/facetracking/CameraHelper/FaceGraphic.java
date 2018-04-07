@@ -38,7 +38,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     private volatile Face mFace;
     private String mFaceName = "Unknown";
     private int tries = 0;
-    private boolean isRecognized = false;
+    private boolean isRecognized = false, isRecognizing = false;
 
     FaceGraphic(GraphicOverlay overlay) {
         super(overlay);
@@ -60,7 +60,11 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     int getTries (){ return tries; }
 
     void setRecognized(boolean recog){ this.isRecognized = recog; }
-    boolean getRecognized(){ return this.isRecognized;}
+    boolean isRecognized(){ return this.isRecognized;}
+
+    void setRecognizing(boolean recog){ this.isRecognizing = recog; }
+    boolean isRecognizing(){ return this.isRecognizing;}
+
 
     /**
      * Updates the face instance from the detection of the most recent frame.  Invalidates the

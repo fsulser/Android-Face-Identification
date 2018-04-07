@@ -2,6 +2,7 @@ package ao.acn.ch.facetracking.AzureHelper;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.microsoft.projectoxford.face.FaceServiceClient;
 import com.microsoft.projectoxford.face.contract.Face;
@@ -29,7 +30,6 @@ public class DetectPersonFace extends AsyncTask<String, String, UUID> {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         imageInputStream = new ByteArrayInputStream(stream.toByteArray());
-
         this.delegate = delegate;
     }
 

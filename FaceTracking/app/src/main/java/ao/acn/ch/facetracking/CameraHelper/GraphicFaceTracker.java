@@ -79,37 +79,43 @@ class GraphicFaceTracker extends Tracker<Face> {
             getPersonIDsForGroup();
         }
 
-        try {
-            detectFace(getProcessedImage(frame, face));
-        }catch (NullPointerException e){
-            Log.e("", "No face detected");
-        }
         new Thread() {
             @Override
             public void run() {
+                try {
+                    detectFace(getProcessedImage(frame, face));
+                }catch (NullPointerException e){
+                    Log.e("", "No face detected");
+                }
             }
         }.start();
     }
 
     private void detectFace(Bitmap bitmap){
-
-        new DetectPersonFace(bitmap, new DetectPersonFace.AsyncResponse() {
-            @Override
-            public void processFinish(UUID faceUUID) {
-                if (faceUUID != null) {
-                    UUID[] faceArray = new UUID[]{faceUUID};
-                    new IdentifyPerson(faceArray, personGroup, new IdentifyPerson.AsyncResponse() {
-                        @Override
-                        public void processFinish(UUID personUUID) {
-                            if (personUUID != null) {
-                                mFaceGraphic.setRecognized(true);
-                                mFaceGraphic.setName(personIDs.get(personUUID));
+        if(!mFaceGraphic.isRecognized() && !mFaceGraphic.isRecognizing()){
+            mFaceGraphic.setRecognizing(true);
+            mFaceGraphic.increaseTries();
+            new DetectPersonFace(bitmap, new DetectPersonFace.AsyncResponse() {
+                @Override
+                public void processFinish(UUID faceUUID) {
+                    if (faceUUID != null) {
+                        UUID[] faceArray = new UUID[]{faceUUID};
+                        new IdentifyPerson(faceArray, personGroup, new IdentifyPerson.AsyncResponse() {
+                            @Override
+                            public void processFinish(UUID personUUID) {
+                                if (personUUID != null) {
+                                    mFaceGraphic.setRecognized(true);
+                                    mFaceGraphic.setName(personIDs.get(personUUID));
+                                }
+                                mFaceGraphic.setRecognizing(false);
                             }
-                        }
-                    }).execute();
+                        }).execute();
+                    }else{
+                        mFaceGraphic.setRecognizing(false);
+                    }
                 }
-            }
-        }).execute();
+            }).execute();
+        }
     }
 
 
@@ -122,11 +128,9 @@ class GraphicFaceTracker extends Tracker<Face> {
         mOverlay.add(mFaceGraphic);
         mFaceGraphic.updateFace(face);
         //if face was not detected on add (due tue bad image), retry to detect a face
-        if(mFaceGraphic.getTries()<2 && !mFaceGraphic.getRecognized()){
+        if(mFaceGraphic.getTries() < 3 && !mFaceGraphic.isRecognized() && !mFaceGraphic.isRecognizing()){
             final Frame frame = GraphicHolder.frame;
             detectFace(getProcessedImage(frame, face));
-            //if no face is detetcted by azure, remove image to retry
-            mFaceGraphic.increaseTries();
         }
     }
 
