@@ -100,6 +100,7 @@ public class CameraHelper extends Application {
                 .setRequestedPreviewSize(640, 480)
                 .setFacing(cameraFacing)
                 .setRequestedFps(30.0f)
+                .setAutoFocusEnabled(true)
                 .build();
 
         // You can use your own processor

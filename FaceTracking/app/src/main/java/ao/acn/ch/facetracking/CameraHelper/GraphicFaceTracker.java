@@ -43,7 +43,6 @@ class GraphicFaceTracker extends Tracker<Face> {
         mFaceGraphic = new FaceGraphic(overlay);
         setPersonGroup();
         getPersonIDsForGroup();
-
     }
 
     private void setPersonGroup(){
@@ -80,7 +79,6 @@ class GraphicFaceTracker extends Tracker<Face> {
             getPersonIDsForGroup();
         }
 
-
         try {
             detectFace(getProcessedImage(frame, face));
         }catch (NullPointerException e){
@@ -94,6 +92,11 @@ class GraphicFaceTracker extends Tracker<Face> {
     }
 
     private void detectFace(Bitmap bitmap){
+        //if no face is detetcted by azure, remove image to retry
+        mFaceGraphic.increaseTries();
+
+        MainActivity.showToast("Number of tries: " + mFaceGraphic.getTries());
+
         new DetectPersonFace(bitmap, new DetectPersonFace.AsyncResponse() {
             @Override
             public void processFinish(UUID faceUUID) {
@@ -108,9 +111,6 @@ class GraphicFaceTracker extends Tracker<Face> {
                             }
                         }
                     }).execute();
-                }else{
-                    //if no face is detetcted by azure, remove image to retry
-                    mFaceGraphic.increaseTries();
                 }
             }
         }).execute();
@@ -128,6 +128,7 @@ class GraphicFaceTracker extends Tracker<Face> {
         //if face was not detected on add (due tue bad image), retry to detect a face
         if(mFaceGraphic.getTries()<2 && !mFaceGraphic.getRecognized()){
             final Frame frame = GraphicHolder.frame;
+            //TODO heres a problem
             detectFace(getProcessedImage(frame, face));
         }
     }

@@ -35,7 +35,6 @@ public class DetectPersonFace extends AsyncTask<String, String, UUID> {
 
     @Override
     protected UUID doInBackground(String... strings) {
-
         // Get an instance of face service client.
         FaceServiceClient faceServiceClient = MainActivity.getFaceServiceClient();
         try{

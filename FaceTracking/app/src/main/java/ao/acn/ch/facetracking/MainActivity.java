@@ -74,7 +74,11 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
         String azureKey = sharedPref.getString(activity.getString(R.string.azure_subscription_key), "");
         String endpoint = sharedPref.getString(activity.getString(R.string.azure_endpoint), "");
-        faceServiceClient = new FaceServiceRestClient(endpoint, azureKey);
+        if((azureKey != null && !azureKey.equals("")) || (endpoint != null && !endpoint.equals(""))){
+            faceServiceClient = new FaceServiceRestClient(endpoint, azureKey);
+        }else{
+            faceServiceClient = null;
+        }
     }
 
     @Override

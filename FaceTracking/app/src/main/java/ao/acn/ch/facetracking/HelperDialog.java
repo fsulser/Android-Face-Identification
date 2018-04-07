@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
@@ -17,6 +18,7 @@ import com.microsoft.projectoxford.face.contract.PersonGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ao.acn.ch.facetracking.AzureHelper.GetPersonGroups;
 
@@ -48,9 +50,9 @@ class HelperDialog extends Dialog {
         apiKey = findViewById(R.id.apiKey);
         endPoint = findViewById(R.id.endpoint);
 
+        getAllGroups();
         setAPIKey();
         setEndpoint();
-        getAllGroups();
 
         saveButtonListener();
         cancelButtonListener();
