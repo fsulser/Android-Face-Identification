@@ -99,8 +99,8 @@ public class CameraHelper extends Application {
         CameraSource mCameraSource = new CameraSource.Builder(context, myFaceDetector)
                 .setRequestedPreviewSize(640, 480)
                 .setFacing(cameraFacing)
-                .setRequestedFps(30.0f)
-                .setAutoFocusEnabled(true)
+                .setRequestedFps(20.0f)
+//                .setAutoFocusEnabled(true)
                 .build();
 
         // You can use your own processor

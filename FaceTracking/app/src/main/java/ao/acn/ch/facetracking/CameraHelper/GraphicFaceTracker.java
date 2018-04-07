@@ -92,10 +92,6 @@ class GraphicFaceTracker extends Tracker<Face> {
     }
 
     private void detectFace(Bitmap bitmap){
-        //if no face is detetcted by azure, remove image to retry
-        mFaceGraphic.increaseTries();
-
-        MainActivity.showToast("Number of tries: " + mFaceGraphic.getTries());
 
         new DetectPersonFace(bitmap, new DetectPersonFace.AsyncResponse() {
             @Override
@@ -128,8 +124,9 @@ class GraphicFaceTracker extends Tracker<Face> {
         //if face was not detected on add (due tue bad image), retry to detect a face
         if(mFaceGraphic.getTries()<2 && !mFaceGraphic.getRecognized()){
             final Frame frame = GraphicHolder.frame;
-            //TODO heres a problem
             detectFace(getProcessedImage(frame, face));
+            //if no face is detetcted by azure, remove image to retry
+            mFaceGraphic.increaseTries();
         }
     }
 

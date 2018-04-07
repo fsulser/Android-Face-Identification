@@ -17,5 +17,6 @@
     <string name="capture_image">Capture Image</string>
     <string name="upload">Upload</string>
     <string name="preview_description">Preview of image to upload</string>
+    <string name="training_status">Training status</string>
 
 </resources>

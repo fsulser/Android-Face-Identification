@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -21,10 +22,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.microsoft.projectoxford.face.contract.AddPersistedFaceResult;
 import com.microsoft.projectoxford.face.contract.Person;
 import com.microsoft.projectoxford.face.contract.PersonGroup;
+import com.microsoft.projectoxford.face.contract.TrainingStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +37,7 @@ import ao.acn.ch.facetracking.AzureHelper.CreatePersonForGroup;
 import ao.acn.ch.facetracking.AzureHelper.CreatePersonGroup;
 import ao.acn.ch.facetracking.AzureHelper.GetPersonGroups;
 import ao.acn.ch.facetracking.AzureHelper.GetPersonsForGroup;
+import ao.acn.ch.facetracking.AzureHelper.MyTrainingStatus;
 import ao.acn.ch.facetracking.AzureHelper.TrainPersonGroup;
 import ao.acn.ch.facetracking.AzureHelper.UploadPersonFace;
 
@@ -49,7 +53,7 @@ public class Train_Fragment extends Fragment{
 
     private View rootView;
     private Spinner personGroups, persons;
-    private Button capture, upload, train;
+    private Button capture, upload, train, status;
     private ImageView preview;
     private Bitmap capturedImage;
     private ProgressDialog progressDialog;
@@ -65,6 +69,7 @@ public class Train_Fragment extends Fragment{
         preview = rootView.findViewById(R.id.preview);
         upload = rootView.findViewById(R.id.uploadImage);
         train = rootView.findViewById(R.id.train);
+        status = rootView.findViewById(R.id.train_status);
 
         //add listener on group change
         personGroupItemSelect();
@@ -79,7 +84,8 @@ public class Train_Fragment extends Fragment{
         uploadButtonListener();
         //listen to train button
         trainButtonListener();
-
+        //listen to training status button
+        trainStatusButtonListener();
 
         return rootView;
     }
@@ -99,16 +105,44 @@ public class Train_Fragment extends Fragment{
         train.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            addProgressbar();
-            runningTasks += 1;
-            String groupName = personGroups.getSelectedItem().toString();
-            new TrainPersonGroup(new TrainPersonGroup.AsyncResponse() {
-                @Override
-                public void processFinish(String output) {
-                    runningTasks -=1;
-                    removeProgressbar();
-                }
-            }).execute(groupName);
+                addProgressbar();
+                runningTasks += 1;
+                String groupName = personGroups.getSelectedItem().toString();
+                new TrainPersonGroup(new TrainPersonGroup.AsyncResponse() {
+                    @Override
+                    public void processFinish(String output) {
+                        runningTasks -=1;
+                        removeProgressbar();
+                        Log.e("status", output);
+                    }
+                }).execute(groupName);
+            }
+        });
+    }
+
+    private void trainStatusButtonListener(){
+        status.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addProgressbar();
+                runningTasks += 1;
+                String groupName = personGroups.getSelectedItem().toString();
+                new MyTrainingStatus(new MyTrainingStatus.AsyncResponse() {
+                    @Override
+                    public void processFinish(TrainingStatus output) {
+                        runningTasks -=1;
+                        removeProgressbar();
+                        if(output == null){
+                            MainActivity.colorToast("Training not performed", Color.RED);
+                            return;
+                        }
+                        if(output.status != TrainingStatus.Status.Succeeded){
+                            MainActivity.colorToast("Training status is " + output.status, Color.RED);
+                        }else{
+                            MainActivity.colorToast("Status is " + output.status + " ready to use", Color.GREEN);
+                        }
+                    }
+                }).execute(groupName);
             }
         });
     }

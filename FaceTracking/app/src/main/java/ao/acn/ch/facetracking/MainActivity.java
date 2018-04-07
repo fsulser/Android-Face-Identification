@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.microsoft.projectoxford.face.FaceServiceClient;
@@ -141,6 +143,16 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.context, message, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public static void colorToast(final String message, final int color){
+        Toast toast = Toast.makeText(MainActivity.context, message, Toast.LENGTH_SHORT);
+        View view = toast.getView();
+
+        TextView text = (TextView) view.findViewById(android.R.id.message);
+
+        text.setTextColor(color);
+        toast.show();
     }
 
 }
