@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018 Sulser Fabio
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ao.acn.ch.facetracking.CameraHelper;
 
 import android.content.Context;
@@ -94,11 +110,11 @@ class GraphicFaceTracker extends Tracker<Face> {
     private void detectFace(Bitmap bitmap){
         if(!mFaceGraphic.isRecognized() && !mFaceGraphic.isRecognizing()){
             mFaceGraphic.setRecognizing(true);
-            mFaceGraphic.increaseTries();
             new DetectPersonFace(bitmap, new DetectPersonFace.AsyncResponse() {
                 @Override
                 public void processFinish(UUID faceUUID) {
                     if (faceUUID != null) {
+                        mFaceGraphic.increaseTries();
                         UUID[] faceArray = new UUID[]{faceUUID};
                         new IdentifyPerson(faceArray, personGroup, new IdentifyPerson.AsyncResponse() {
                             @Override
